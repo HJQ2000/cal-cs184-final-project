@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Charlotte Mei & Jingqi Huang  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 3: PathTracer</h1>
+<h2 align="middle">Charlotte Mei & Jingqi Huang</h2>
+
+<div class="padded">
+    <p>This assignment provides a very good opportunity for us to learn and implement ray tracer with material modeling. </p>
+    <p></p>
+    <h2 align="middle">Part 1: Mirror and Glass Materials</h2>
+    <p>
+        With max_ray_depth=0, we can only see the light source in the top of the image.<br />
+        With max_ray_depth=1, there is no reflection nor refraction since light don't bounce and there is only direct lighting.<br />
+        With max_ray_depth=2, we can see reflection in both balls but almost no refraction in the right ball. That is because the R value
+            is large so that there is more reflection than refraction in the right-side glass ball.<br/>
+        With max_ray_depth=3, we can see both reflection and refraction in the image. However, since the light only bounces at most three times, 
+            in the left glass ball we can see that the reflected glass ball in the reflection is dark. <br/>
+        With max_ray_depth=4, the reflected glass ball in the reflection is no longer dark because we added one bounce to the rays. <br/>
+        With max_ray_depth=5, the image is similar to that with max_ray_depth=4, the only difference is that the image is slightly brighter due
+            to the fact that the ray bounces one more time in the image. <br/>
+        With max_ray_depth=100, there is no big difference with the rendered image with max_ray_depth=5 because light bounces are killed due to Russian Roulette.
+    </p>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/spheres.png" width="480px" />
+                    <figcaption align="middle">resulting image with max_ray_depth=0</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/spheres1.png" width="480px" />
+                    <figcaption align="middle">resulting image with max_ray_depth=1</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/spheres2.png" width="480px" />
+                    <figcaption align="middle">resulting image with max_ray_depth=2</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/spheres3.png" width="480px" />
+                    <figcaption align="middle">resulting image with max_ray_depth=3</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/spheres4.png" width="480px" />
+                    <figcaption align="middle">resulting image with max_ray_depth=4</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/spheres5.png" width="480px" />
+                    <figcaption align="middle">resulting image with max_ray_depth=5</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/spheres100.png" width="480px" />
+                    <figcaption align="middle">resulting image with max_ray_depth=100</figcaption>
+                </td>
+            </tr>
+        </table>
+
+        <br>
+        <br>
+        
+        <h2 align="middle">Part 2: Microfacet BRDF</h2>
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/CBdragon_microfacet_au_0.005.png" width="480px" />
+                    <figcaption align="middle">resulting image with alpha=0.005</figcaption>
+                </td>
+                <td align="middle">
+                    <img src="images/CBdragon_microfacet_au_0.05.png" width="480px" />
+                    <figcaption align="middle">resulting image with alpha=0.05</figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                    <img src="images/CBdragon_microfacet_au_0.25.png" width="480px" />
+                    <figcaption align="middle">resulting image with alpha=0.25</figcaption>
+                </td>
+                <td align="middle">
+                    <img src="images/CBdragon_microfacet_au_0.5.png" width="480px" />
+                    <figcaption align="middle">resulting image with alpha=0.5</figcaption>
+                </td>
+            </tr>
+        </table>
+        <p align="left">As the alpha increase, the dragon is less reflective and have less noise. When alpha is small, we can see very strong relfection of the red and purple wall on the dragon surface. When alpha increase to 0.5, we see nearly no reflection but purely diffuse.</p>
+        <br>
+        <br>
+
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/CBbunny_microfacet_cu_default.png" width="480px" />
+                    <figcaption align="middle">resulting image using cosine hemisphere sampling </figcaption>
+                </td>
+                <td align="middle">
+                    <img src="images/CBbunny_microfacet_cu.png" width="480px" />
+                    <figcaption align="middle">resulting image using importance sampling</figcaption>
+                </td>
+            </tr>
+        </table>
+        <p align="left">Bunny generating with cosine hemisphere sampling has more noise and black dots while bunny with importance sampling is more realistic. When using cosine hemisphere sampling, it samples randomly and thus result in more noise. </p>
+
+        <br>
+        <br>
+
+        <table style="width=100%">
+            <p>The bunny on the top is iron. The bunny on the bottom is cesium.</p>
+            <tr>
+                <td align="middle">
+                    <img src="images/CBbunny_microfacet_iron.png" width="480px" />
+                    <figcaption align="middle">Iron(Fe) bunny: eta = [2.8851 2.9500 2.6500], k = [3.0449 2.9300 2.8075] </figcaption>
+                </td>
+            </tr>
+            <br>
+            <tr>
+                <td align="middle">
+                    <img src="images/CBbunny_microfacet_cs.png" width="480px" />
+                    <figcaption align="middle">Cesium(Cs) bunny: eta = [0.26106 0.26442 0.30786], k = [1.1682 0.96051 0.66811] </figcaption>
+                </td>
+            </tr>
+
+        </table>
+
+        <p align = "left">Charlotte Mei did part 1, Jingqi Huang did part 2. We first do it separately and discuss the general idea and step online when both finished.</p>
+
+</div>
+</body>
+</html>
+
+
+
+
