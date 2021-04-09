@@ -22,41 +22,39 @@
 <h4 align="middle">Yuankai Yang</h4>
 
 <div class="padded">
-    <p>In project 3-1 and 3-2 we implement pathtracing rendering on glass, mirror and microfacet material, but do not have support for texture. We want to add texture support to make the rendering more appealing and interesting.</p>
+    <h2 align="middle">Problem Description</h2>
+    <p>In project 3-1 and 3-2 we implemented pathtracing rendering on glass, mirror and microfacet material.
+        However, we didn't have support for various textures. In this final project, we want to add texture support 
+        to make the rendering more appealing and interesting.</p>
     
+    <h2 align="middle">Goals and Deliverables</h2>
    <div align="left">
-    <p>Our goal is to render objects with more varied and realistic looking. We want to render objects with different surface texture.</p>
-    <p>We want to keep the rendering fast, reusable, and can cope with different texture realistically. We want to see a rabbit wearing cloth.</p>
-    <p>More complicated texture involving more complex reflection and refraction. Finding suitable reflection and refraction for varied texture is one of the main point.</p>
-    <p>As in project 1, we see texture mapping in 2D. Here we want to accomplish texture mapping in 3D. We think the overall logic will be similar.</p>
+    <h4 align="middle">What we plan to deliver?</h2>
+    <p>Our goal is to be able to map various textures including cloths and simple 2D textures to the object.</p>
+    <p>We want to keep the rendering fast, reusable, and can cope with different texture realistically.
+        We think that the basic logic of implementing texture mapping is the same as the one introduced in class.
+        We could build on that and try to find suitable reflection and refraction for varied texture with 
+        complicated texture such as clothes involves more complex reflection and refraction.
+    </p>
 
-    <br>
-    <p>Our initial goal is to have a rabbit wearing realistic cloth (including pleats and yarn) or make the rabbit looks hairy. We then realize that it may not be possible by soley adding texture support. If we want to have pleats and shapes outside of the main object, things may go very different.</p>
-    <p>We will deliver sphere with different texture, and rabbit in tight cloth.</p>
-    
-        <h2 align="middle">Part 2</h2>
-        <table style="width=100%">
-            <tr>
-                <td align="middle">
-                    <img src="images/CBdragon_microfacet_au_0.005.png" width="480px" />
-                    <figcaption align="middle">resulting image with alpha=0.005</figcaption>
-                </td>
-                <td align="middle">
-                    <img src="images/CBdragon_microfacet_au_0.05.png" width="480px" />
-                    <figcaption align="middle">resulting image with alpha=0.05</figcaption>
-                </td>
-            </tr>
-            <tr>
-                <td align="middle">
-                    <img src="images/CBdragon_microfacet_au_0.25.png" width="480px" />
-                    <figcaption align="middle">resulting image with alpha=0.25</figcaption>
-                </td>
-                <td align="middle">
-                    <img src="images/CBdragon_microfacet_au_0.5.png" width="480px" />
-                    <figcaption align="middle">resulting image with alpha=0.5</figcaption>
-                </td>
-            </tr>
-        </table>
+    <h4 align="middle">What we hope to deliver?</h2>
+    <p>We would hope to achieve that having a rabbit wearing realistic cloth (including pleats and yarn) or make the rabbit looks hairy, and to accomplish this we might need to implement more 
+        than simple texture rendering since the pleats and shapes is not 2D but other 3D objects that's not part of the rabbit.
+        If we have time, we would also like to try speeding up the process as more as possible.
+    </p>
+
+
+    <h2 align="middle">Schedule</h2>
+    <p>Week1: Implement feasible basic logic</p>
+    <p>Week2: Implement higher-level logic. The goal is to be able to render an image that at least looks similar to what we expect</p>
+    <p>Week3: Testing and further improving the algorithm. Make sure that we accomplishes the "what we plan to deliver?" part.
+         Try to accomplish "what we hope to deliver?"
+    </p>
+    <p>Week4: Work on final report & continue to work on "what we hope to deliver?" part</p>
+
+    <h2 align="middle">Resources</h2>
+    <p>http://www.cs.toronto.edu/~kyros/courses/418/Lectures/lecture.2010f.07.pdf</p>
+    <p>http://graphics.ucsd.edu/~henrik/papers/practical_microcylinder_appearance_model_for_cloth_rendering.pdf</p>
 
 </div>
 </body>
