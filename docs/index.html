@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <style>  
@@ -22,35 +22,20 @@
 <h4 align="middle">Yuankai Yang</h4>
 
 <div class="padded">
-    <h2 align="middle">Problem Description</h2>
-    <p>In project 3-1 and 3-2 we implemented pathtraced rendering on glass, mirror and microfacet material.
-        However, we didn't have support for various textures. In this final project, we want to add texture support 
-        to make the rendering more appealing and interesting.</p>
+    <h2 align="middle">Brief summarize</h2>
+    <p>We studied the codebase for project 3 and trying to add a texture model into the codebase. We find this difficult to start with, so we learn to write a simplified version of ray tracer process with far less options. We collected learning materials to do texture mapping for regular shape objects such as sphere and cube. By now, we just have spheres in different colors.</p>
     
     <h2 align="middle">Goals and Deliverables</h2>
-   <div align="left">
-    <h4 align="middle">What we plan to deliver?</h2>
-    <p>Our goal is to be able to map various textures including cloths and simple 2D textures to objects.</p>
-    <p>We want to keep the rendering fast, reusable, and able to cope with different textures realistically.
-        We think that the basic logic of implementing texture mapping is the same as the one introduced in class.
-        We could build on that and try to find suitable reflection and refraction for varied and complicated
-        textures such as clothes, which involve more complex reflection and refraction techniques.
-    </p>
+    <div align="left">
 
-    <h4 align="middle">What we hope to deliver?</h2>
-    <p>We would hope to achieve a rabbit wearing realistic cloth (including pleats and yarn), or make the rabbit look furry. To accomplish this we might need to implement more 
-        than simple texture rendering since the pleats are defined by 3D objects that aren't a part of the original rabbit mesh.
-        If we have time, we would also like to try speeding up the process as much as possible.
-    </p>
+    <h4 align="middle">What we have for now.</h2>
+    <img src="images/1.png" width="480px" />
+    <img src="images/2.png" width="480px" />
 
-
-    <h2 align="middle">Schedule</h2>
-    <p>Week1: Implement feasible basic logic</p>
-    <p>Week2: Implement higher-level logic. The goal is to be able to render an image that at least looks similar to what we expect</p>
-    <p>Week3: Testing and further improving the algorithm. Make sure that we accomplishes the "what we plan to deliver?" part.
-         Try to accomplish "what we hope to deliver?"
-    </p>
-    <p>Week4: Work on final report & continue to work on "what we hope to deliver?" part</p>
+    <p>We are running back at of initial plan, and find texture mapping to irregular shape hard to understand. We change our goal to first have image of solar system with sphere of different size and texture. If we still have time, we will try to deal with irregular shape.</p>
+   <p>
+   Our logic by now is to first load the image of texture, then convert the image into uv texture coordinate, then map the uv coordinate to 3D sphere xyz space, and finally output the resulting image to file. To load the image, we import stbi_load class. 
+   </p>
 
     <h2 align="middle">Resources</h2>
     <p>http://www.cs.toronto.edu/~kyros/courses/418/Lectures/lecture.2010f.07.pdf</p>
