@@ -12,8 +12,11 @@ struct Vec {        // Usage: time ./smallpt 5000 && xv image.ppm
   double dot(const Vec &b) const { return x*b.x+y*b.y+z*b.z; } // cross:
   Vec operator%(Vec&b){return Vec(y*b.z-z*b.y,z*b.x-x*b.z,x*b.y-y*b.x);}
 };
+
 struct Ray { Vec o, d; Ray(Vec o_, Vec d_) : o(o_), d(d_) {} };
+
 enum Refl_t { DIFF, SPEC, REFR };  // material types, used in radiance()
+
 struct Sphere {
   double rad;       // radius
   Vec p, e, c;      // position, emission, color
@@ -26,7 +29,74 @@ struct Sphere {
     if (det<0) return 0; else det=sqrt(det);
     return (t=b-det)>eps ? t : ((t=b+det)>eps ? t : 0);
   }
+    
+    Vec get_color_at(Vec x) const {
+        if(rad > 500){
+            return c;
+        }
+        Vec checker_c = Vec(1,1,1)*.599;
+        /*
+        Vec p_object = x-p;
+        //float phi = atan2(p_object.z, p_object.x);
+        //float theta = asin(p_object.y);
+        //float u = 1 - (phi + M_PI) / (2 * M_PI);
+        //float v =  (theta + M_PI / 2) / M_PI;
+        
+        double theta = atan2(p_object.x, p_object.z);
+        double phi = acos(p_object.y / rad);
+        double raw_u = theta / (2 * M_PI);
+        double u = 1 - (raw_u + 0.5);
+        double v = 1 - phi / M_PI;
+        
+        bool u_check = 0;
+        bool v_check = 0;
+        if(u < 1/5 or (u>2/5 and u<3/5) or (u>4/5 and u<5/5)) {
+            u_check = 1;
+        }
+        if(v < 1/4 or (v>1/2 and u<3/4)) {
+            v_check = 1;
+        }
+        if(u_check and v_check) {
+            return c;
+        } else if( u_check or v_check) {
+            return checker_c;
+        } else {
+            return c;
+        }*/
+        
+        bool x_checker = 0;
+        bool y_checker = 0;
+        if((x - p).x > rad/2){
+            x_checker = 1;
+        }
+        if((x - p).x < 0 and (x - p).x > -rad/2) {
+            x_checker = 1;
+        }
+        
+        if((x - p).y > rad/2){
+            y_checker = 1;
+        }
+        if((x - p).y < 0 and (x - p).y > -rad/2) {
+            y_checker = 1;
+        }
+        if(x_checker and y_checker) {
+            return c;
+        } else if(x_checker or y_checker) {
+            return checker_c;
+        } else {
+            return c;
+        } 
+        /*
+        if((x - p).x *(x-p).y > 0) {
+            return c;
+        } else {
+            return checker_c;
+        }*/
+        
+        
+    }
 };
+
 Sphere spheres[] = {//Scene: radius, position, emission, color, material
   Sphere(1e5, Vec( 1e5+1,40.8,81.6), Vec(),Vec(.75,.25,.25),DIFF),//Left
   Sphere(1e5, Vec(-1e5+99,40.8,81.6),Vec(),Vec(.25,.25,.75),DIFF),//Rght
@@ -34,8 +104,8 @@ Sphere spheres[] = {//Scene: radius, position, emission, color, material
   Sphere(1e5, Vec(50,40.8,-1e5+170), Vec(),Vec(),           DIFF),//Frnt
   Sphere(1e5, Vec(50, 1e5, 81.6),    Vec(),Vec(.75,.75,.75),DIFF),//Botm
   Sphere(1e5, Vec(50,-1e5+81.6,81.6),Vec(),Vec(.75,.75,.75),DIFF),//Top
-  Sphere(16.5,Vec(27,16.5,47),       Vec(),Vec(1,1,1)*.999, SPEC),//Mirr
-  Sphere(16.5,Vec(73,16.5,78),       Vec(),Vec(1,1,1)*.999, REFR),//Glas
+  Sphere(16.5,Vec(27,16.5,47),       Vec(),Vec(1,0,1)*.999, SPEC),//Mirr
+  Sphere(16.5,Vec(73,16.5,78),       Vec(),Vec(1,1,0)*.999, DIFF),//Glas
   Sphere(600, Vec(50,681.6-.27,81.6),Vec(12,12,12),  Vec(), DIFF) //Lite
 };
 inline double clamp(double x){ return x<0 ? 0 : x>1 ? 1 : x; }
@@ -50,7 +120,11 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi){
   int id=0;                               // id of intersected object
   if (!intersect(r, t, id)) return Vec(); // if miss, return black
   const Sphere &obj = spheres[id];        // the hit object
-  Vec x=r.o+r.d*t, n=(x-obj.p).norm(), nl=n.dot(r.d)<0?n:n*-1, f=obj.c;
+    Vec x=r.o+r.d*t;
+    Vec n=(x-obj.p).norm();
+    Vec nl=n.dot(r.d)<0?n:n*-1;
+    //Vec f=obj.c;
+    Vec f = obj.get_color_at(x);
   double p = f.x>f.y && f.x>f.z ? f.x : f.y>f.z ? f.y : f.z; // max refl
   if (++depth>5) if (erand48(Xi)<p) f=f*(1/p); else return obj.e; //R.R.
   if (obj.refl == DIFF){                  // Ideal DIFFUSE reflection
@@ -92,7 +166,7 @@ int main(int argc, char *argv[]){
           c[i] = c[i] + Vec(clamp(r.x),clamp(r.y),clamp(r.z))*.25;
         }
   }
-  FILE *f = fopen("image.ppm", "w");         // Write image to PPM file.
+  FILE *f = fopen("image3.ppm", "w");         // Write image to PPM file.
   fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
   for (int i=0; i<w*h; i++)
     fprintf(f,"%d %d %d ", toInt(c[i].x), toInt(c[i].y), toInt(c[i].z));
