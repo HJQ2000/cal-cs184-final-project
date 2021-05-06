@@ -32,7 +32,8 @@ struct Texture {
 int nx1 = 1000, ny1 = 500;
 int nn = 3;
 //unsigned char *tex_data1 = stbi_load("wall.jpg", &nx1, &ny1, &nn, 0);
-unsigned char *tex_data1 = stbi_load("line.png", &nx1, &ny1, &nn, 0);
+//unsigned char *tex_data1 = stbi_load("line.png", &nx1, &ny1, &nn, 0);
+unsigned char *tex_data1 = stbi_load("earth.jpg", &nx1, &ny1, &nn, 0);
 
 
 struct Sphere {
@@ -103,6 +104,7 @@ struct Sphere {
         return Vec(r,g,b);
         
         /*
+         //checker texture mapping
         int u_check = round(20*u);
         int v_check = round(10*v);
         if((u_check+v_check) % 2 == 0) {
@@ -206,7 +208,7 @@ int main(int argc, char *argv[]){
           c[i] = c[i] + Vec(clamp(r.x),clamp(r.y),clamp(r.z))*.25;
         }
   }
-  FILE *f = fopen("image7.ppm", "w");         // Write image to PPM file.
+  FILE *f = fopen("image8.ppm", "w");         // Write image to PPM file.
   fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
   for (int i=0; i<w*h; i++)
     fprintf(f,"%d %d %d ", toInt(c[i].x), toInt(c[i].y), toInt(c[i].z));
