@@ -1,3 +1,6 @@
+#include <iostream>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb-master/stb_image.h"
 #include <math.h>   // smallpt, a Path Tracer by Kevin Beason, 2008
 #include <stdlib.h> // Make : g++ -O3 -fopenmp smallpt.cpp -o smallpt
 #include <stdio.h>  //        Remove "-fopenmp" for g++ version < 4.2
@@ -16,6 +19,15 @@ struct Vec {        // Usage: time ./smallpt 5000 && xv image.ppm
 struct Ray { Vec o, d; Ray(Vec o_, Vec d_) : o(o_), d(d_) {} };
 
 enum Refl_t { DIFF, SPEC, REFR };  // material types, used in radiance()
+/*
+struct Texture {
+    Vec color1;
+    Vec color2;
+    Texture(Vec color1_, Vec color2_) : color1(color1_), color2(color2_){}
+    Vec get_color_at_uv(float u, float v) const {
+        
+    }
+}*/
 
 struct Sphere {
   double rad;       // radius
@@ -34,20 +46,63 @@ struct Sphere {
         if(rad > 500){
             return c;
         }
-        Vec checker_c = Vec(1,1,1)*.599;
-        /*
+        Vec checker_c = Vec(1,1,1)*.799;
+        
         Vec p_object = x-p;
         //float phi = atan2(p_object.z, p_object.x);
         //float theta = asin(p_object.y);
         //float u = 1 - (phi + M_PI) / (2 * M_PI);
         //float v =  (theta + M_PI / 2) / M_PI;
         
+        
         double theta = atan2(p_object.x, p_object.z);
         double phi = acos(p_object.y / rad);
         double raw_u = theta / (2 * M_PI);
         double u = 1 - (raw_u + 0.5);
         double v = 1 - phi / M_PI;
+        //std::cout << u;
+        //std::cout << "  ";
+        //std::cout << v;
         
+        //Define width and height of the checker texture
+        //width 16, 16*u
+        //height 10, 10*u
+        /*
+        int nx1 = 1000, ny1 = 500;
+        int nn = 3;
+        unsigned char *tex_data1 = stbi_load("earth", &nx1, &ny1, &nn, 0);
+        int u_check = u * nx1;
+        int v_check = (1-v) * ny1 -0.001;
+        if(u_check < 0) {
+            u_check = 0;
+        }
+        if(v_check < 0) {
+            v_check = 0;
+        }
+        if(u_check > nx1-1) {
+            u_check = nx1-1;
+        }
+        if(u_check > ny1-1) {
+            u_check = ny1-1;
+        }
+        
+        float r = int(tex_data1[3*u_check + 3*nx1*v_check])/255.0;
+        float g = int(tex_data1[3*u_check + 3*nx1*v_check+1])/255.0;
+        float b = int(tex_data1[3*u_check + 3*nx1*v_check+2])/255.0;
+        
+        return c; */
+        
+        
+        int u_check = round(20*u);
+        int v_check = round(10*v);
+        if((u_check+v_check) % 2 == 0) {
+            //std::cout << " 1" << "\n";
+            return c;
+        } else {
+            //std::cout << " 2" << "\n";
+            return checker_c;
+        }
+        /*
         bool u_check = 0;
         bool v_check = 0;
         if(u < 1/5 or (u>2/5 and u<3/5) or (u>4/5 and u<5/5)) {
@@ -57,42 +112,15 @@ struct Sphere {
             v_check = 1;
         }
         if(u_check and v_check) {
+            std::cout << " 1" << "\n";
             return c;
         } else if( u_check or v_check) {
+            std::cout << " 2" << "\n";
             return checker_c;
         } else {
             return c;
-        }*/
-        
-        bool x_checker = 0;
-        bool y_checker = 0;
-        if((x - p).x > rad/2){
-            x_checker = 1;
         }
-        if((x - p).x < 0 and (x - p).x > -rad/2) {
-            x_checker = 1;
-        }
-        
-        if((x - p).y > rad/2){
-            y_checker = 1;
-        }
-        if((x - p).y < 0 and (x - p).y > -rad/2) {
-            y_checker = 1;
-        }
-        if(x_checker and y_checker) {
-            return c;
-        } else if(x_checker or y_checker) {
-            return checker_c;
-        } else {
-            return c;
-        } 
-        /*
-        if((x - p).x *(x-p).y > 0) {
-            return c;
-        } else {
-            return checker_c;
-        }*/
-        
+        */
         
     }
 };
@@ -106,6 +134,7 @@ Sphere spheres[] = {//Scene: radius, position, emission, color, material
   Sphere(1e5, Vec(50,-1e5+81.6,81.6),Vec(),Vec(.75,.75,.75),DIFF),//Top
   Sphere(16.5,Vec(27,16.5,47),       Vec(),Vec(1,0,1)*.999, SPEC),//Mirr
   Sphere(16.5,Vec(73,16.5,78),       Vec(),Vec(1,1,0)*.999, DIFF),//Glas
+  Sphere(9.5, Vec(73,46.5,78),       Vec(),Vec(0,1,1)*.999, REFR),//Glas
   Sphere(600, Vec(50,681.6-.27,81.6),Vec(12,12,12),  Vec(), DIFF) //Lite
 };
 inline double clamp(double x){ return x<0 ? 0 : x>1 ? 1 : x; }
@@ -166,7 +195,7 @@ int main(int argc, char *argv[]){
           c[i] = c[i] + Vec(clamp(r.x),clamp(r.y),clamp(r.z))*.25;
         }
   }
-  FILE *f = fopen("image3.ppm", "w");         // Write image to PPM file.
+  FILE *f = fopen("image5.ppm", "w");         // Write image to PPM file.
   fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
   for (int i=0; i<w*h; i++)
     fprintf(f,"%d %d %d ", toInt(c[i].x), toInt(c[i].y), toInt(c[i].z));
