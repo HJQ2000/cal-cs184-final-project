@@ -31,10 +31,14 @@ struct Texture {
 
 int nx1 = 1000, ny1 = 500;
 int nn = 3;
-//unsigned char *tex_data1 = stbi_load("wall.jpg", &nx1, &ny1, &nn, 0);
-//unsigned char *tex_data1 = stbi_load("line.png", &nx1, &ny1, &nn, 0);
 unsigned char *tex_data1 = stbi_load("earth.jpg", &nx1, &ny1, &nn, 0);
+unsigned char *tex_data_earth = stbi_load("earth.jpg", &nx1, &ny1, &nn, 0);
+unsigned char *tex_data_sun = stbi_load("sun.jpg", &nx1, &ny1, &nn, 0);
+unsigned char *tex_data_muxing = stbi_load("muxing.jpg", &nx1, &ny1, &nn, 0);
 
+//unsigned char *tex_data1 = stbi_load("line.png", &nx1, &ny1, &nn, 0);
+//unsigned char *tex_data1 = stbi_load("earth.jpg", &nx1, &ny1, &nn, 0);
+//unsigned char *tex_data1 = stbi_load("fur.jpg", &nx1, &ny1, &nn, 0);
 
 struct Sphere {
   double rad;       // radius
@@ -53,85 +57,62 @@ struct Sphere {
         if(rad > 500){
             return c;
         }
-        //Vec checker_c = Vec(1,1,1)*.799;
+        Vec checker_c = Vec(1,1,1)*.799;
         
         Vec p_object = x-p;
-        //float phi = atan2(p_object.z, p_object.x);
-        //float theta = asin(p_object.y);
-        //float u = 1 - (phi + M_PI) / (2 * M_PI);
-        //float v =  (theta + M_PI / 2) / M_PI;
-
         
         double theta = atan2(p_object.x, p_object.z);
         double phi = acos(p_object.y / rad);
         double raw_u = theta / (2 * M_PI);
         double u = 1 - (raw_u + 0.5);
         double v = 1 - phi / M_PI;
-        //std::cout << u;
-        //std::cout << "  ";
-        //std::cout << v;
         
         //Define width and height of the checker texture
         //width 16, 16*u
         //height 10, 10*u
         
-        //int nx1 = 100, ny1 = 50;
-        //int nn = 3;
-        //unsigned char *tex_data1 = stbi_load("earth.png", &nx1, &ny1, &nn, 0);
-        int u_check = u * nx1;
-        int v_check = (1-v) * ny1 - 0.001;
-        if(u_check < 0) {
-            std::cout << "<0 u" << "\n";
-            u_check = 0;
-        }
-        if(v_check < 0) {
-            std::cout << "<0 v" << "\n";
-            v_check = 0;
-        }
-        if(u_check > nx1-1) {
-            std::cout << "too large u" << "\n";
-            u_check = nx1-1;
-        }
-        if(v_check > ny1-1) {
-            std::cout << "too large v" << "\n";
-            v_check = ny1-1;
+        if(rad == 16.9) {
+            tex_data1 = tex_data_earth;
+            int u_check = u * nx1;
+            int v_check = (1-v) * ny1 - 0.001;
+            float r = int(tex_data1[3*u_check + 3*nx1*v_check])/255.0;
+            float g = int(tex_data1[3*u_check + 3*nx1*v_check+1])/255.0;
+            float b = int(tex_data1[3*u_check + 3*nx1*v_check+2])/255.0;
+            
+            return Vec(r,g,b);
         }
         
+        if(rad == 16.5) {
+            int u_check = round(8*u);
+            int v_check = round(4*v);
+            if((u_check+v_check) % 2 == 0) {
+                //std::cout << " 1" << "\n";
+                return c;
+            } else {
+                //std::cout << " 2" << "\n";
+                return checker_c;
+            }
+        }
+        
+        /*
+        int u_check = u * nx1;
+        int v_check = (1-v) * ny1 - 0.001;
         float r = int(tex_data1[3*u_check + 3*nx1*v_check])/255.0;
         float g = int(tex_data1[3*u_check + 3*nx1*v_check+1])/255.0;
         float b = int(tex_data1[3*u_check + 3*nx1*v_check+2])/255.0;
-        
         return Vec(r,g,b);
+        */
         
         /*
          //checker texture mapping
-        int u_check = round(20*u);
-        int v_check = round(10*v);
+        int u_check = round(8*u);
+        int v_check = round(4*v);
         if((u_check+v_check) % 2 == 0) {
             //std::cout << " 1" << "\n";
             return c;
         } else {
             //std::cout << " 2" << "\n";
             return checker_c;
-        }
-        */
-        /*
-        bool u_check = 0;
-        bool v_check = 0;
-        if(u < 1/5 or (u>2/5 and u<3/5) or (u>4/5 and u<5/5)) {
-            u_check = 1;
-        }
-        if(v < 1/4 or (v>1/2 and u<3/4)) {
-            v_check = 1;
-        }
-        if(u_check and v_check) {
-            std::cout << " 1" << "\n";
-            return c;
-        } else if( u_check or v_check) {
-            std::cout << " 2" << "\n";
-            return checker_c;
-        } else {
-            return c;
         }
         */
         
@@ -146,8 +127,8 @@ Sphere spheres[] = {//Scene: radius, position, emission, color, material
   Sphere(1e5, Vec(50, 1e5, 81.6),    Vec(),Vec(.75,.75,.75),DIFF),//Botm
   Sphere(1e5, Vec(50,-1e5+81.6,81.6),Vec(),Vec(.75,.75,.75),DIFF),//Top
   Sphere(16.5,Vec(27,16.5,47),       Vec(),Vec(1,0,1)*.999, SPEC),//Mirr
-  Sphere(16.5,Vec(73,16.5,78),       Vec(),Vec(1,1,0)*.999, DIFF),//Glas
-  Sphere(9.5, Vec(73,46.5,78),       Vec(),Vec(0,1,1)*.999, REFR),//Glas
+  Sphere(16.9,Vec(73,16.5,78),       Vec(),Vec(1,1,0)*.999, DIFF),//Glas
+  //Sphere(9.5, Vec(73,52.5,78),       Vec(),Vec(0,1,1)*.999, SPEC),//Glas
   Sphere(600, Vec(50,681.6-.27,81.6),Vec(12,12,12),  Vec(), DIFF) //Lite
 };
 inline double clamp(double x){ return x<0 ? 0 : x>1 ? 1 : x; }
@@ -208,7 +189,7 @@ int main(int argc, char *argv[]){
           c[i] = c[i] + Vec(clamp(r.x),clamp(r.y),clamp(r.z))*.25;
         }
   }
-  FILE *f = fopen("image8.ppm", "w");         // Write image to PPM file.
+  FILE *f = fopen("image13.ppm", "w");         // Write image to PPM file.
   fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
   for (int i=0; i<w*h; i++)
     fprintf(f,"%d %d %d ", toInt(c[i].x), toInt(c[i].y), toInt(c[i].z));
