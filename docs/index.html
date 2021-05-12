@@ -38,6 +38,7 @@
             On the upper left corner is the image texture we gave to the spheres inside the box.</p>
             <img src="images/brick.jpg" width="480px" />
             <img src="images/wave.jpg" width="480px" />
+            <img src="images/planet.png" width="480px" />
         <br>
         <p>Our basic idea is that when light intersects with object which we want to render with texture, the algorithm will return the corresponding values of the texture at that point of intersection instead of the original color.
             For sphere, we only need to find a continuous function that maps 3-dimensional coordinates to 2-dimensional texture uv-coordinates. Specifically, for every intersection, we map the 3d (x,y,z) position of the sphere to 2d uv coordinate of the texture and return the corresponding texture value at that uv coordinate. </p>
@@ -76,12 +77,13 @@
     <h2 align="middle">Resources</h2>
     <p>http://www.cs.toronto.edu/~kyros/courses/418/Lectures/lecture.2010f.07.pdf</p>
     <p>http://graphics.ucsd.edu/~henrik/papers/practical_microcylinder_appearance_model_for_cloth_rendering.pdf</p>
+    <p>http://www.raytracerchallenge.com/bonus/texture-mapping.html</p>
     
     <h2 align="middle">Contributions from each team member</h2>
     <p>Jingqi Huang, Charlotte Mei and Ryan Solan all contributed to the base algorithm of the renderer, 
-        Apart from that, Jingqi worked to produce the checker-like texture;
-        Ryan modified the renderer to produce the final images;
-        Charlotte made the slides and websites for the milestones and presentation.</p>
+        Apart from that, Jingqi worked to produce the checker-like texture and image texture;
+        Ryan modified the renderer to produce the final images and make videos;
+        Charlotte helped with image read in and made the slides and websites for the milestones and presentation.</p>
 
 </div>
 </body>
